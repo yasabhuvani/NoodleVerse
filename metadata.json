@@ -1,0 +1,8 @@
+{
+  "name": "NoodleVerse - Global Noodle Marketplace",
+  "description": "Taste the World, One Noodle at a Time. Explore authentic ramen, noodles, and pasta dishes from around the globe with custom bowl builder, flavor passport, and eco choices.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
