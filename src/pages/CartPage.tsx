@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ArrowLeft, AlertCircle, MapPin, Store } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { EmptyState } from '../components/EmptyState';
@@ -102,6 +102,7 @@ export const CartPage: React.FC = () => {
                     <img
                       src={item.product.imageUrl || FALLBACK_NOODLE_IMAGE}
                       alt={item.product.name}
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = FALLBACK_NOODLE_IMAGE;
                       }}
@@ -110,12 +111,23 @@ export const CartPage: React.FC = () => {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-stone-500">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-stone-500 flex-wrap">
                       <span>{item.product.countryFlag}</span>
                       <span>{item.product.cuisine}</span>
+                      {(item.restaurantName || item.customDetails?.restaurantName || item.product.restaurantName) && (
+                        <>
+                          <span>•</span>
+                          <span className="text-orange-700 font-extrabold inline-flex items-center gap-1 bg-orange-50 px-2 py-0.5 rounded-md">
+                            <MapPin className="w-3 h-3 text-orange-600" />
+                            <span>
+                              {item.restaurantName || item.customDetails?.restaurantName || item.product.restaurantName}
+                            </span>
+                          </span>
+                        </>
+                      )}
                     </div>
 
-                    <h3 className="text-base font-extrabold text-stone-900 truncate">
+                    <h3 className="text-base font-extrabold text-stone-900 truncate mt-0.5">
                       {item.product.name}
                     </h3>
 

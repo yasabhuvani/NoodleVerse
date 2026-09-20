@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Utensils, Sparkles, Globe2, Flame, Leaf, Compass } from 'lucide-react';
+import { ArrowRight, Utensils, Sparkles, Globe2, Flame, Leaf, Compass, Store, MapPin } from 'lucide-react';
 import { Product } from '../types';
 import { productService } from '../services/api';
+import { HYDERABAD_RESTAURANTS } from '../data/restaurantsData';
+import { RestaurantCard } from '../components/RestaurantCard';
 import { ProductCard } from '../components/ProductCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
@@ -41,24 +43,46 @@ const POPULAR_TYPES = [
 ];
 
 export const HomePage: React.FC = () => {
-  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [trendingFilter, setTrendingFilter] = useState<'ALL' | 'SPICY' | 'RAMEN' | 'VEG'>('ALL');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPopular = async () => {
+    const fetchAll = async () => {
       try {
         const all = await productService.getProducts();
-        // Pick 6 varied showcase items
-        setPopularProducts(all.slice(0, 6));
+        setAllProducts(all);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    fetchPopular();
+    fetchAll();
   }, []);
+
+  // Curated trending products in popularity order
+  const trendingIds = ['4', '3', '7', '6', '9', '2', '1', '10'];
+  const trendingProductsBase = trendingIds
+    .map((id) => allProducts.find((p) => p.id === id))
+    .filter((p): p is Product => Boolean(p));
+
+  const filteredTrending = trendingProductsBase.filter((product) => {
+    if (trendingFilter === 'SPICY') {
+      return product.spiceLevel === 'HOT' || product.spiceLevel === 'EXTRA_HOT' || product.spiceLevel === 'MEDIUM';
+    }
+    if (trendingFilter === 'VEG') {
+      return product.dietType === 'VEGETARIAN' || product.dietType === 'VEGAN';
+    }
+    if (trendingFilter === 'RAMEN') {
+      return (
+        product.noodleType.toLowerCase().includes('ramen') ||
+        product.noodleType.toLowerCase().includes('ramyeon')
+      );
+    }
+    return true;
+  }).slice(0, 6);
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-16">
@@ -199,39 +223,131 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. POPULAR AROUND THE WORLD */}
+      {/* NOODLE RESTAURANTS IN HYDERABAD MARKETPLACE SHOWCASE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-orange-600 block mb-1">
-              Curated Selection
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
-              Popular Around the World
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-900 text-xs font-bold mb-2 border border-orange-200">
+              <MapPin className="w-3.5 h-3.5 text-orange-600" />
+              <span>Hyderabad Restaurant Marketplace</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-stone-900 tracking-tight">
+              Explore Restaurants in Hyderabad
             </h2>
-            <p className="text-sm text-stone-600 mt-1">
-              Customer favorites loved across campuses and cities worldwide.
+            <p className="text-sm sm:text-base text-stone-600 mt-1 max-w-2xl">
+              Discover noodle & Asian restaurants near you in Hyderabad. Pick a kitchen to prepare your custom artisan bowl or order their signature noodle bowls.
             </p>
           </div>
 
           <Link
-            to="/products"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-orange-600 hover:text-orange-700 group"
+            to="/restaurants"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-bold transition-all shadow-xs shrink-0"
           >
-            <span>View All 18+ Dishes</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <Store className="w-4 h-4 text-orange-400" />
+            <span>View All Hyderabad Kitchens</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
+        {/* 3 Featured Restaurant Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {HYDERABAD_RESTAURANTS.slice(0, 3).map((restaurant) => (
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+          ))}
+        </div>
+
+        {/* Quick Area Jump Pills */}
+        <div className="mt-8 p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <span className="font-bold text-stone-700 flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-orange-600" />
+            <span>Popular Hyderabad Noodle Hubs:</span>
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {['Madhapur', 'Jubilee Hills', 'Banjara Hills', 'HITEC City', 'Gachibowli'].map((area) => (
+              <Link
+                key={area}
+                to={`/restaurants?area=${encodeURIComponent(area)}`}
+                className="px-3 py-1 rounded-lg bg-stone-100 hover:bg-orange-50 hover:text-orange-700 text-stone-700 font-semibold transition-colors"
+              >
+                📍 {area}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. TRENDING NOODLES */}
+      <section id="trending-noodles-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-black uppercase tracking-wider mb-2 border border-orange-200">
+              <Flame className="w-3.5 h-3.5 text-orange-600 animate-pulse" />
+              <span>Campus & Global Heat Index</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-stone-900 tracking-tight flex items-center gap-2.5">
+              <span>🔥 Trending Noodles</span>
+            </h2>
+            <p className="text-sm sm:text-base text-stone-600 mt-1 max-w-xl">
+              The hottest, most craved noodle bowls trending right now across campuses and foodies worldwide.
+            </p>
+          </div>
+
+          {/* Trending Filter Pills */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {[
+              { key: 'ALL', label: '🔥 All Trending' },
+              { key: 'SPICY', label: '🌶️ Spicy Hits' },
+              { key: 'RAMEN', label: '🍜 Ramen & Ramyeon' },
+              { key: 'VEG', label: '🌱 Plant-Based' },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                id={`filter-${tab.key.toLowerCase()}-btn`}
+                onClick={() => setTrendingFilter(tab.key as any)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  trendingFilter === tab.key
+                    ? 'bg-orange-600 text-white shadow-sm scale-105'
+                    : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {loading ? (
-          <LoadingSpinner message="Fetching popular global bowls..." />
+          <LoadingSpinner message="Fetching trending global bowls..." />
+        ) : filteredTrending.length === 0 ? (
+          <div className="text-center py-12 bg-stone-50 rounded-2xl border border-stone-200">
+            <p className="text-sm text-stone-500 font-medium">No trending bowls found in this category.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {filteredTrending.map((product, idx) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                trendingRank={idx + 1}
+              />
             ))}
           </div>
         )}
+
+        {/* Explore More link banner */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200/80">
+          <p className="text-xs text-stone-500 font-medium text-center sm:text-left">
+            🔥 Rankings updated hourly based on campus order frequency, live reviews, and student favorites.
+          </p>
+          <Link
+            to="/products"
+            id="view-all-trending-btn"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-800 text-xs sm:text-sm font-bold border border-orange-200 transition-all hover:scale-102 shrink-0"
+          >
+            <span>Explore All 18+ Global Dishes</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </section>
 
       {/* 4. EXPLORE BY COUNTRY */}

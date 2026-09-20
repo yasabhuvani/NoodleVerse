@@ -1,4 +1,20 @@
 import { Product } from '../types';
+import imgJajangmyeon from '../assets/images/korean_jajangmyeon_1789711144459.jpg';
+import imgPadSeeEw from '../assets/images/thai_pad_see_ew_1789711157034.jpg';
+import imgJapchae from '../assets/images/korean_japchae_1789711172439.jpg';
+import imgLaksa from '../assets/images/malaysian_laksa_1789711186832.jpg';
+import imgSanukiUdon from '../assets/images/sanuki_udon_1789711202741.jpg';
+import imgDesiHakka from '../assets/images/desi_hakka_noodles_1789711888115.jpg';
+import imgSchezwan from '../assets/images/schezwan_noodles_1789711902633.jpg';
+import imgCheeseMaggi from '../assets/images/cheese_maggi_1789711919251.jpg';
+import imgMieGoreng from '../assets/images/mie_goreng_1789711933701.jpg';
+import imgPancitCanton from '../assets/images/pancit_canton_1789711948714.jpg';
+import imgSingaporeMeiFun from '../assets/images/singapore_mei_fun_1789711963442.jpg';
+import imgTaiwanBeef from '../assets/images/taiwan_beef_noodles_1789711976830.jpg';
+import imgLanzhouLamian from '../assets/images/lanzhou_lamian_1789711992558.jpg';
+import imgKhaoSoi from '../assets/images/khao_soi_1789712004826.jpg';
+import imgBunBoHue from '../assets/images/bun_bo_hue_1789712018303.jpg';
+import imgCharKwayTeow from '../assets/images/char_kway_teow_1789712032777.jpg';
 
 export const FALLBACK_NOODLE_IMAGE = 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80';
 
@@ -83,7 +99,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Korean',
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MILD',
-    imageUrl: 'https://images.unsplash.com/photo-1634864572885-b062540b6159?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgJajangmyeon,
     restaurantName: 'Busan Noodle Guild',
     stock: 9,
     createdAt: '2026-03-01T11:00:00Z',
@@ -151,7 +167,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Thai',
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MILD',
-    imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgPadSeeEw,
     restaurantName: 'Chiang Mai Kitchen',
     stock: 11,
     createdAt: '2026-03-01T12:00:00Z',
@@ -185,7 +201,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Indian',
     dietType: 'VEGETARIAN',
     spiceLevel: 'MEDIUM',
-    imageUrl: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgDesiHakka,
     restaurantName: 'Tangra Wok Kolkata',
     stock: 25,
     createdAt: '2026-03-01T12:30:00Z',
@@ -202,7 +218,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Indian',
     dietType: 'VEGETARIAN',
     spiceLevel: 'HOT',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgSchezwan,
     restaurantName: 'Bombay Chinjabi Corner',
     stock: 16,
     createdAt: '2026-03-01T12:45:00Z',
@@ -219,7 +235,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Indonesian',
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MEDIUM',
-    imageUrl: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgMieGoreng,
     restaurantName: 'Bali Noodle Warung',
     stock: 13,
     createdAt: '2026-03-01T13:00:00Z',
@@ -236,7 +252,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Malaysian',
     dietType: 'SEAFOOD',
     spiceLevel: 'HOT',
-    imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgLaksa,
     restaurantName: 'Penang Spice Trail',
     stock: 7,
     createdAt: '2026-03-01T13:15:00Z',
@@ -253,7 +269,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Filipino',
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MILD',
-    imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgPancitCanton,
     restaurantName: 'Manila Fiesta Bowls',
     stock: 15,
     createdAt: '2026-03-01T13:30:00Z',
@@ -270,7 +286,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Korean',
     dietType: 'VEGAN',
     spiceLevel: 'MILD',
-    imageUrl: 'https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgJapchae,
     restaurantName: 'Gangnam Garden',
     stock: 14,
     createdAt: '2026-03-01T13:45:00Z',
@@ -287,7 +303,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Singaporean',
     dietType: 'EGG',
     spiceLevel: 'HOT',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgSingaporeMeiFun,
     restaurantName: 'Marina Bay Hawker',
     stock: 8,
     createdAt: '2026-03-01T14:00:00Z',
@@ -304,7 +320,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: 'Japanese',
     dietType: 'VEGAN',
     spiceLevel: 'MILD',
-    imageUrl: 'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgSanukiUdon,
     restaurantName: 'Kagawa Udon Works',
     stock: 3, // Low stock test!
     createdAt: '2026-03-01T14:15:00Z',
@@ -449,7 +465,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MEDIUM',
     servingStyle: 'SOUP',
-    imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgTaiwanBeef,
     restaurantName: 'Taipei Niu Rou Mian',
     stock: 8,
     createdAt: '2026-03-02T10:45:00Z',
@@ -467,7 +483,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'MEDIUM',
     servingStyle: 'SOUP',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgLanzhouLamian,
     restaurantName: 'Silk Road Lamian',
     stock: 13,
     createdAt: '2026-03-02T11:00:00Z',
@@ -485,7 +501,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'HOT',
     servingStyle: 'SOUP',
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgKhaoSoi,
     restaurantName: 'Lanna Chiang Mai Kitchen',
     stock: 10,
     createdAt: '2026-03-02T11:15:00Z',
@@ -521,7 +537,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'NON_VEGETARIAN',
     spiceLevel: 'HOT',
     servingStyle: 'SOUP',
-    imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgBunBoHue,
     restaurantName: 'Hue Royal Broths',
     stock: 9,
     createdAt: '2026-03-02T11:45:00Z',
@@ -539,7 +555,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'SEAFOOD',
     spiceLevel: 'MEDIUM',
     servingStyle: 'DRY',
-    imageUrl: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgCharKwayTeow,
     restaurantName: 'Penang Hawker Wok',
     stock: 14,
     createdAt: '2026-03-02T12:00:00Z',
@@ -575,7 +591,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     dietType: 'VEGETARIAN',
     spiceLevel: 'MEDIUM',
     servingStyle: 'DRY',
-    imageUrl: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=800&q=80',
+    imageUrl: imgCheeseMaggi,
     restaurantName: 'Campus Tapri Junction',
     stock: 35,
     createdAt: '2026-03-02T12:30:00Z',

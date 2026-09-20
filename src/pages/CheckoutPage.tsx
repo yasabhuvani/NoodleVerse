@@ -216,21 +216,32 @@ export const CheckoutPage: React.FC = () => {
 
             {/* List of items */}
             <div className="divide-y divide-stone-100 max-h-72 overflow-y-auto pr-1">
-              {cart.map((item) => (
-                <div key={item.id} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
-                  <div className="min-w-0 pr-2">
-                    <p className="font-bold text-stone-900 truncate">
-                      {item.product.name}
-                    </p>
-                    <p className="text-[11px] text-stone-500">
-                      ₹{item.price} × {item.quantity}
-                    </p>
+              {cart.map((item) => {
+                const restName =
+                  item.restaurantName ||
+                  item.customDetails?.restaurantName ||
+                  item.product.restaurantName;
+                return (
+                  <div key={item.id} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
+                    <div className="min-w-0 pr-2">
+                      <p className="font-bold text-stone-900 truncate">
+                        {item.product.name}
+                      </p>
+                      <div className="flex items-center gap-2 text-[11px] text-stone-500">
+                        <span>₹{item.price} × {item.quantity}</span>
+                        {restName && (
+                          <span className="text-orange-700 font-extrabold truncate">
+                            • {restName}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="font-extrabold text-stone-900 shrink-0">
+                      ₹{item.price * item.quantity}
+                    </span>
                   </div>
-                  <span className="font-extrabold text-stone-900 shrink-0">
-                    ₹{item.price * item.quantity}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pricing breakdown */}

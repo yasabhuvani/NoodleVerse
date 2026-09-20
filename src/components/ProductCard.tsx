@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Eye, Check } from 'lucide-react';
+import { ShoppingBag, Eye, Check, Heart } from 'lucide-react';
 import { Product } from '../types';
 import { SpiceBadge, DietBadge } from './Badges';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { FALLBACK_NOODLE_IMAGE } from '../data/initialProducts';
 
 interface ProductCardProps {
   product: Product;
+  trendingBadge?: string;
+  trendingRank?: number;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, trendingBadge, trendingRank }) => {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const isSaved = isInWishlist(product.id);
   const isOutOfStock = product.stock <= 0;
   const isLowStock = product.stock > 0 && product.stock <= 3;
 
@@ -48,6 +53,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img
           src={product.imageUrl || FALLBACK_NOODLE_IMAGE}
           alt={product.name}
+          referrerPolicy="no-referrer"
           onError={(e) => {
             (e.target as HTMLImageElement).src = FALLBACK_NOODLE_IMAGE;
           }}
@@ -61,8 +67,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <span>{product.cuisine}</span>
         </div>
 
-        {/* Stock Badge */}
-        <div className="absolute top-3 right-3">
+        {/* Top Right Badges: Stock + Wishlist Heart */}
+        <div className="absolute top-3 right-3 flex items-center gap-1.5">
           {isOutOfStock ? (
             <span className="px-2.5 py-1 rounded-full bg-red-600/95 text-white text-xs font-extrabold shadow-sm">
               Sold Out
@@ -76,7 +82,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               In Stock
             </span>
           )}
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleWishlist(product);
+            }}
+            id={`wishlist-btn-${product.id}`}
+            title={isSaved ? 'Remove from Wishlist (Saved)' : 'Add to Wishlist'}
+            className={`p-1.5 rounded-full backdrop-blur-md shadow-sm transition-all ${
+              isSaved
+                ? 'bg-red-500 text-white hover:bg-red-600 scale-105'
+                : 'bg-white/90 text-stone-600 hover:text-red-500 hover:bg-white'
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${isSaved ? 'fill-white' : ''}`} />
+          </button>
         </div>
+
+        {/* Trending Ribbon / Badge */}
+        {(trendingRank !== undefined || trendingBadge) && (
+          <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-600/95 text-white text-[11px] font-black shadow-md backdrop-blur-xs tracking-tight">
+            <span>🔥</span>
+            <span>{trendingBadge || `#${trendingRank} Trending`}</span>
+          </div>
+        )}
       </div>
 
       {/* Card Content */}

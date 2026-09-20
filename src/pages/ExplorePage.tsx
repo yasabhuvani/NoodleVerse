@@ -582,6 +582,36 @@ export const ExplorePage: React.FC = () => {
         )}
       </div>
 
+      {/* Active Search Banner */}
+      {searchQuery.trim() && (
+        <div
+          id="search-results-banner"
+          className="flex items-center justify-between p-3.5 sm:p-4 bg-orange-50/90 border border-orange-200 rounded-2xl shadow-xs"
+        >
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-2 bg-orange-600 text-white rounded-xl">
+              <Search className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-sm sm:text-base font-extrabold text-stone-900">
+                Search results for &ldquo;<span className="text-orange-600">{searchQuery}</span>&rdquo;
+              </p>
+              <p className="text-xs text-stone-500 font-medium">
+                Found {products.length} {products.length === 1 ? 'matching dish' : 'matching dishes'} across name, cuisine, country, and noodle type
+              </p>
+            </div>
+          </div>
+          <button
+            id="btn-clear-search"
+            onClick={() => setSearchQuery('')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-300 hover:bg-stone-50 text-stone-700 hover:text-red-600 text-xs font-bold transition-all shadow-xs"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>Clear Search</span>
+          </button>
+        </div>
+      )}
+
       {/* Results Header */}
       <div className="flex items-center justify-between">
         <span className="text-xs sm:text-sm font-bold text-stone-700">

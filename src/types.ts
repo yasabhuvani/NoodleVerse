@@ -15,6 +15,66 @@ export type PickupLocation =
 
 export type PaymentMethod = 'CASH_ON_PICKUP' | 'DEMO_PAYMENT';
 
+export type HyderabadArea =
+  | 'Jubilee Hills'
+  | 'Banjara Hills'
+  | 'Madhapur'
+  | 'HITEC City'
+  | 'Gachibowli'
+  | 'Kondapur'
+  | 'Begumpet'
+  | 'Kokapet';
+
+export interface RestaurantNoodleOption {
+  name: string;
+  icon: string;
+  desc: string;
+}
+
+export interface RestaurantBrothOption {
+  name: string;
+  type: 'Broth' | 'Sauce';
+  price: number;
+  desc: string;
+}
+
+export interface RestaurantProteinOption {
+  name: string;
+  extraPrice: number;
+  icon: string;
+  desc: string;
+}
+
+export interface Restaurant {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  cuisine: string;
+  cuisineBadges: string[];
+  location: string;
+  area: HyderabadArea;
+  restaurantType: string;
+  imageUrl: string;
+  rating: number;
+  reviewsCount: number;
+  priceRange: string;
+  approxCostForTwo: number;
+  vegetarianAvailable: boolean;
+  veganAvailable?: boolean;
+  spiceLevels: SpiceLevel[];
+  specialties: string[];
+  isDemoVendor: boolean;
+  demoNote?: string;
+  supportedNoodles: RestaurantNoodleOption[];
+  supportedBroths: RestaurantBrothOption[];
+  supportedProteins: RestaurantProteinOption[];
+  supportedVegetables: string[];
+  supportedToppings: string[];
+  menuItemIds: string[];
+  openingHours?: string;
+}
+
 export interface Product {
   id: string | number;
   name: string;
@@ -30,6 +90,8 @@ export interface Product {
   servingStyle?: ServingStyle;
   imageUrl: string;
   restaurantName: string;
+  restaurantId?: string;
+  restaurantArea?: HyderabadArea;
   stock: number;
   createdAt: string;
   isCustomBowl?: boolean;
@@ -48,7 +110,13 @@ export interface CartItem {
   product: Product;
   quantity: number;
   price: number;
+  restaurantId?: string;
+  restaurantName?: string;
+  restaurantArea?: string;
   customDetails?: {
+    restaurantId?: string;
+    restaurantName?: string;
+    restaurantLocation?: string;
     noodle: string;
     broth: string;
     protein: string;
@@ -70,14 +138,20 @@ export interface OrderItemSummary {
   dietType: DietType;
   customDetails?: string;
   imageUrl?: string;
+  restaurantId?: string;
+  restaurantName?: string;
+  restaurantLocation?: string;
 }
 
 export interface Order {
   id: string;
   orderNumber: string;
+  pickupToken?: string;
+  estimatedPrepTime?: string;
   createdAt: string;
   items: OrderItemSummary[];
   subtotal: number;
+  taxes?: number;
   deliveryFee: number;
   total: number;
   pickupLocation: PickupLocation;
@@ -86,9 +160,15 @@ export interface Order {
   minimalPackaging: boolean;
   userEmail: string;
   userName: string;
+  restaurantId?: string;
+  restaurantName?: string;
+  restaurantLocation?: string;
 }
 
 export interface CustomBowlState {
+  restaurantId: string;
+  restaurantName: string;
+  restaurantLocation: string;
   noodle: string;
   broth: string;
   protein: string;

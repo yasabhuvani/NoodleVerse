@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { Clock, MapPin, Package, ArrowRight, ShieldAlert } from 'lucide-react';
+import { Clock, MapPin, Package, ArrowRight, ShieldAlert, Ticket } from 'lucide-react';
 import { Order, OrderStatus } from '../types';
 import { orderService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { FlavorPassportCard } from '../components/FlavorPassportCard';
+import { OrderStatusStepper } from '../components/OrderStatusStepper';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
 
@@ -57,6 +58,15 @@ export const OrdersPage: React.FC = () => {
     };
     fetchOrders();
   }, []);
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+    try {
+      const updated = await orderService.updateOrderStatus(orderId, newStatus);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+    } catch (err) {
+      console.error('Failed to update status:', err);
+    }
+  };
 
   if (!user) {
     return (
@@ -131,14 +141,36 @@ export const OrdersPage: React.FC = () => {
                         <Clock className="w-3.5 h-3.5" />
                         <span>{new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
+                      {order.restaurantName && (
+                        <div className="flex items-center gap-1.5 text-xs text-orange-700 font-extrabold mt-0.5">
+                          <span>Prepared by:</span>
+                          <span>{order.restaurantName}</span>
+                          {order.restaurantLocation && (
+                            <span className="text-stone-500 font-normal">({order.restaurantLocation})</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
+                    {order.pickupToken && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-orange-100/80 text-orange-900 font-mono font-bold text-xs border border-orange-200">
+                        <Ticket className="w-3 h-3 text-orange-600" />
+                        <span>Token: {order.pickupToken}</span>
+                      </span>
+                    )}
                     <span className="text-xs text-stone-500 font-medium">Status:</span>
                     {getStatusBadge(order.status)}
                   </div>
                 </div>
+
+                {/* Live Tracking Progress Bar / Stepper (Feature 13) */}
+                <OrderStatusStepper
+                  status={order.status}
+                  onAdvanceStatus={(newStatus) => handleUpdateOrderStatus(order.id, newStatus)}
+                  showSimulateControl={true}
+                />
 
                 {/* Items in Order */}
                 <div className="space-y-2.5">

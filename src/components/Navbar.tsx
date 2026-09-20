@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, LogOut, Menu, X, PlusCircle, Compass, Utensils, Award } from 'lucide-react';
+import { ShoppingBag, User, LogOut, Menu, X, PlusCircle, Compass, Utensils, Award, Heart, Store } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 export const Navbar: React.FC = () => {
   const { user, logout, login } = useAuth();
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingInDemo, setIsLoggingInDemo] = useState(false);
   const navigate = useNavigate();
@@ -62,6 +64,18 @@ export const Navbar: React.FC = () => {
               Home
             </Link>
             <Link
+              to="/restaurants"
+              id="nav-restaurants"
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                isActive('/restaurants')
+                  ? 'text-orange-600 bg-orange-50'
+                  : 'text-stone-700 hover:text-orange-600 hover:bg-stone-50'
+              }`}
+            >
+              <Store className="w-4 h-4 text-orange-600" />
+              <span>Restaurants</span>
+            </Link>
+            <Link
               to="/products"
               id="nav-explore"
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
@@ -113,6 +127,22 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Icons & Auth */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Wishlist Button */}
+            <Link
+              to="/wishlist"
+              id="nav-wishlist-btn"
+              className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-stone-100 hover:bg-red-50 text-stone-700 hover:text-red-600 transition-all font-semibold text-sm border border-stone-200/80"
+              title="View Wishlist"
+            >
+              <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : 'text-stone-500'}`} />
+              <span>Wishlist</span>
+              {wishlistCount > 0 && (
+                <span className="flex items-center justify-center min-w-[18px] h-4.5 px-1 text-[11px] font-bold text-white bg-red-500 rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Button */}
             <Link
               to="/cart"
@@ -177,7 +207,20 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile Menu Toggle & Cart */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-1 sm:gap-2 md:hidden">
+            <Link
+              to="/wishlist"
+              id="mobile-wishlist-btn"
+              className="relative p-2 text-stone-700 hover:text-red-600"
+              title="Wishlist"
+            >
+              <Heart className={`w-6 h-6 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : ''}`} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
             <Link
               to="/cart"
               id="mobile-cart-btn"
@@ -212,6 +255,14 @@ export const Navbar: React.FC = () => {
             Home
           </Link>
           <Link
+            to="/restaurants"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block px-3 py-2 rounded-lg text-base font-semibold text-stone-800 hover:bg-stone-50 flex items-center gap-2"
+          >
+            <Store className="w-4 h-4 text-orange-600" />
+            <span>Explore Restaurants (Hyderabad)</span>
+          </Link>
+          <Link
             to="/products"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 rounded-lg text-base font-semibold text-stone-800 hover:bg-stone-50"
@@ -224,6 +275,21 @@ export const Navbar: React.FC = () => {
             className="block px-3 py-2 rounded-lg text-base font-semibold text-orange-600 bg-orange-50"
           >
             🍜 Build Your Bowl
+          </Link>
+          <Link
+            to="/wishlist"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block px-3 py-2 rounded-lg text-base font-semibold text-stone-800 hover:bg-stone-50 flex items-center justify-between"
+          >
+            <span className="flex items-center gap-2">
+              <Heart className="w-4 h-4 text-red-500" />
+              <span>My Wishlist</span>
+            </span>
+            {wishlistCount > 0 && (
+              <span className="px-2 py-0.5 text-xs font-bold bg-red-100 text-red-700 rounded-full">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
           <Link
             to="/orders"

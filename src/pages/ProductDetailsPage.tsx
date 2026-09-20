@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Check, Plus, Minus, Store, MapPin, Sparkles } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Check, Plus, Minus, Store, MapPin, Sparkles, Heart, Globe } from 'lucide-react';
 import { Product } from '../types';
 import { productService } from '../services/api';
 import { SpiceBadge, DietBadge } from '../components/Badges';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EcoChoiceBanner } from '../components/EcoChoiceBanner';
 import { FALLBACK_NOODLE_IMAGE } from '../data/initialProducts';
@@ -21,6 +22,7 @@ export const ProductDetailsPage: React.FC = () => {
   const [cartError, setCartError] = useState<string | null>(null);
 
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,6 +110,7 @@ export const ProductDetailsPage: React.FC = () => {
           <img
             src={product.imageUrl || FALLBACK_NOODLE_IMAGE}
             alt={product.name}
+            referrerPolicy="no-referrer"
             onError={(e) => {
               (e.target as HTMLImageElement).src = FALLBACK_NOODLE_IMAGE;
             }}
@@ -127,10 +130,14 @@ export const ProductDetailsPage: React.FC = () => {
           <div className="space-y-4">
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-800 border border-orange-200">
+                <Globe className="w-3.5 h-3.5 text-orange-600" />
+                <span>🌎 {product.cuisine} Cuisine</span>
+              </span>
               <DietBadge diet={product.dietType} />
               <SpiceBadge level={product.spiceLevel} />
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700">
-                {product.noodleType}
+              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-700">
+                Noodle: {product.noodleType}
               </span>
             </div>
 
@@ -140,11 +147,14 @@ export const ProductDetailsPage: React.FC = () => {
             </h1>
 
             {/* Vendor & Location */}
-            <div className="flex items-center gap-4 text-xs font-semibold text-stone-500">
-              <span className="flex items-center gap-1.5">
-                <Store className="w-3.5 h-3.5 text-stone-400" />
-                <span>{product.restaurantName}</span>
-              </span>
+            <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-stone-500">
+              <Link
+                to={product.restaurantId ? `/restaurants/${product.restaurantId}` : '/restaurants'}
+                className="flex items-center gap-1.5 text-orange-700 hover:text-orange-800 font-bold bg-orange-50 hover:bg-orange-100 px-2.5 py-1 rounded-lg transition-colors"
+              >
+                <Store className="w-3.5 h-3.5 text-orange-600" />
+                <span>{product.restaurantName} (Hyderabad Kitchen)</span>
+              </Link>
               <span className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-stone-400" />
                 <span>{product.country}</span>
@@ -227,35 +237,50 @@ export const ProductDetailsPage: React.FC = () => {
               )}
             </div>
 
-            {/* Add to Cart Button */}
-            <button
-              id="add-to-cart-detail-btn"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock || adding}
-              className={`w-full py-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 shadow-md transition-all ${
-                isOutOfStock
-                  ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
-                  : added
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white shadow-orange-600/25'
-              }`}
-            >
-              {added ? (
-                <>
-                  <Check className="w-5 h-5" />
-                  <span>Added {quantity} to Cart!</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>
-                    {isOutOfStock
-                      ? 'Out of Stock'
-                      : `Add ${quantity} to Cart • ₹${product.price * quantity}`}
-                  </span>
-                </>
-              )}
-            </button>
+            {/* Action Buttons: Add to Cart + Wishlist Heart */}
+            <div className="flex items-center gap-3">
+              <button
+                id="add-to-cart-detail-btn"
+                onClick={handleAddToCart}
+                disabled={isOutOfStock || adding}
+                className={`flex-1 py-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 shadow-md transition-all ${
+                  isOutOfStock
+                    ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                    : added
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white shadow-orange-600/25'
+                }`}
+              >
+                {added ? (
+                  <>
+                    <Check className="w-5 h-5" />
+                    <span>Added {quantity} to Cart!</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-5 h-5" />
+                    <span>
+                      {isOutOfStock
+                        ? 'Out of Stock'
+                        : `Add ${quantity} to Cart • ₹${product.price * quantity}`}
+                    </span>
+                  </>
+                )}
+              </button>
+
+              <button
+                id="detail-wishlist-btn"
+                onClick={() => toggleWishlist(product)}
+                title={isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                className={`p-4 rounded-2xl border transition-all flex items-center justify-center ${
+                  isInWishlist(product.id)
+                    ? 'bg-red-50 text-red-600 border-red-200 shadow-sm'
+                    : 'bg-stone-50 text-stone-600 hover:text-red-500 hover:bg-red-50/50 border-stone-300'
+                }`}
+              >
+                <Heart className={`w-6 h-6 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+              </button>
+            </div>
 
             {/* Quick Link to Cart if added */}
             {added && (
